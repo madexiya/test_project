@@ -4,6 +4,7 @@ from pythoncode.calc import Calculator
 
 
 class Test_calc:
+    # 类级别，每个类里面前后分别执行setup_class和teardown_class
     def setup_class(self):
         self.cal = Calculator()
         print("类级别的setup")
@@ -11,13 +12,27 @@ class Test_calc:
     def teardown_class(self):
         print("类级别的teardown")
 
+    # 方法级别， 每条类里的测试用例前后分别执行setup和teardown
+    def setup(self):
+        print("setup")
+
+    def teardown(self):
+        print("teardown")
+
     @pytest.mark.add
-    def test_add(self):
-        assert 3 == self.cal.add(1, 2)
+    @pytest.mark.parametrize("a,b,result", [
+        (1, 2, 3),
+        (4, 5, 9),
+        (100, 100, 200),
+        (0.1, 0.1, 0.2),
+        (-1, -1, -2)
+    ], ids=["int1", "int2", "bigint", "float", "fushu"])
+    def test_add(self, a, b, result):
+        assert result == self.cal.add(a, b)
 
     @pytest.mark.add
     def test_add1(self):
-        assert 7 == self.cal.add(3, 4)
+        assert 5 == self.cal.add(2, 3)
 
     @pytest.mark.div
     def test_div(self):
