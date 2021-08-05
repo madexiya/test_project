@@ -5,7 +5,6 @@ from pythoncode.calc import Calculator
 
 class Test_calc:
     cal = Calculator()
-
     # 类级别，每个类里面前后分别执行setup_class和teardown_class
     # def setup_class(self):
     #     self.cal = Calculator()
@@ -30,6 +29,7 @@ class Test_calc:
         (-1, -1, -2)
     ], ids=["int1", "int2", "bigint", "float", "fushu"])
     def test_add(self, a, b, result):
+        # 通过self.cal调用类属性
         assert result == self.cal.add(a, b)
 
     # @pytest.mark.add
