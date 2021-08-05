@@ -1,3 +1,4 @@
+import re
 import pytest
 import requests
 
@@ -55,7 +56,14 @@ class TestWework:
         # 整体测试
         userid = "aoteman"
         name = "奥特曼"
-        assert "created" == self.test_create(token, userid, "17603060001")["errmsg"]
+        try:
+            assert "created" == self.test_create(token, userid, "17603060001")["errmsg"]
+        except AssertionError as e:
+            if "mobile existed" in e.__str__():
+                # 正则获取存在的userid
+                re_userid = re.findall(":(.*)'$", e.__str__())[0]
+                self.test_delete(token, re_userid)
+                self.test_create(token, userid, "17603060001")
         assert name == self.test_get(token, userid)["name"]
         assert "updated" == self.test_update(token, userid)["errmsg"]
         assert "奥特曼996" == self.test_get(token, userid)["name"]
