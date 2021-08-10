@@ -6,12 +6,12 @@ import requests
 
 def test_create_data():
     """
-    函数生成测试数据 userid name mobile
+    生成测试数据 userid name mobile
     :return:
     """
-    data = [(random.randint(0, 999999),
+    data = [("aoteman" + str(x),
              "奥特曼",
-             str(random.randint(17612340001, 17612349999))) for x in range(3)]
+             "138%08d" % x) for x in range(10)]
     return data
 
 
@@ -50,11 +50,11 @@ class TestWework:
         r = requests.get(f"https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token={token}&userid={userid}")
         return r.json()
 
-    def test_update(self, token, userid, name="奥特曼996", mobile="17603068888"):
+    def test_update(self, token, userid, name="奥特曼996"):
         request_body = {
             "userid": userid,
             "name": name,
-            "mobile": mobile}
+        }
         r = requests.post(f"https://qyapi.weixin.qq.com/cgi-bin/user/update?access_token={token}",
                           json=request_body)
         return r.json()
@@ -71,13 +71,13 @@ class TestWework:
         # name = "奥特曼"
         # mobile = "17603060001"
         try:
-            assert "created" == self.test_create(token, userid, mobile)["errmsg"]
+            assert "created" == self.test_create(token, userid, mobile, name)["errmsg"]
         except AssertionError as e:
             if "mobile existed" in e.__str__():
                 # 正则获取存在的userid
                 re_userid = re.findall(":(.*)'$", e.__str__())[0]
                 self.test_delete(token, re_userid)
-                self.test_create(token, userid, mobile)
+                self.test_create(token, userid, mobile, name)
         assert name == self.test_get(token, userid)["name"]
         assert "updated" == self.test_update(token, userid)["errmsg"]
         assert "奥特曼996" == self.test_get(token, userid)["name"]
