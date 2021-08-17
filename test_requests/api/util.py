@@ -2,6 +2,7 @@ import requests
 
 
 class Util:
+    # 基础类 获取token
     def get_token(self):
         request_param = {
             "corpid": "ww6eb2aef1942224c8",
